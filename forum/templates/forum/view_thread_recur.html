@@ -1,0 +1,51 @@
+        
+{% if post.post_text != None %} <!-- We are not the root node -->
+
+    <!-- Display the content of this post -->
+    <li name="{{post.post_id}}" class='post' id='{{post.post_id}}' ><div class='post_div'>
+    <p><strong>{{post.username|escape}}</strong> on {{post.date_posted}}</p>
+
+
+    <p class='post_text'>
+
+    {% if post.deleted == False %}
+        {{post.post_text|escape}}
+        <a class='delete_post' href='/delete_post?post_id={{post.post_id}}&thread_id={{post.thread_id}}'>Delete</a>
+            
+    {% else %} 
+            This post has been deleted by the moderator.
+    {% endif %}
+
+        </p>
+    {% if post.children == None %}
+        <button type='button' class='reply_new_branch'>Reply to this post</button>
+    {% endif %}
+        </div> <!-- class='post_div' -->
+        </li><!-- name="{{post.post_id}}" class='post' id='{{post.post_id}} -->
+{% endif %}
+
+<!-- Display this post's children -->
+{% if post.children != None %}
+    <ul id='{{post.post_id}}'>
+    {% for child in post.children %}
+        {# ugly hack to make recursive includes work #}
+        {% with "forum/view_thread_recur.html" as filename %}
+            {% with post=child %}
+                {% include filename %}
+            {% endwith %}
+        {% endwith %}
+    {% endfor %}
+
+     </ul>
+{% endif %}
+               
+<!-- Add a reply button to continue the current conversation --> 
+{% if post.post_text != None %} 
+
+    <!-- We are the last child of the current conversation -->
+    {% if post.parent.children|last == post %}
+        <li>
+        <button type='button' class='reply_current_branch'>Continue conversation</button>
+        </li>
+    {% endif %}
+{% endif %}
