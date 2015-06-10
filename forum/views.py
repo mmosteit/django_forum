@@ -4,6 +4,7 @@ from django.template import RequestContext, loader
 from models import Threads, Posts
 from django.core.urlresolvers import reverse
 
+
 import datetime
 import logging
 
@@ -43,19 +44,33 @@ def index(request):
     return HttpResponse(template.render(context))
 
 def new_post(request):
-    
+
+
     new_username    = request.POST['username']
     new_post_text   = request.POST['post_text'] 
     new_date_posted = datetime.datetime.now()
     new_parent_id   = request.POST['parent_id']
     new_thread_id   = request.POST['thread_id']
-    
+   
+   
+    if new_username.strip() == "" or new_post_text.strip() == "":
+        template = loader.get_template('forum/new_post_error.html')
+        title    = "Error creating thread"
+        context  = RequestContext(request,{"title":title,"thread_id":new_thread_id})
+        return HttpResponse(template.render(context))  
+   
     post = Posts(username = new_username, post_text = new_post_text, date_posted = new_date_posted, parent_id = new_parent_id, deleted = False, thread_id = new_thread_id)
     post.save()
     
     response = redirect('view_thread')
     response['Location'] += '?thread_id='+str(new_thread_id)
     return response
+
+   
+
+   
+    
+#def new_post_error(request)
     
 def new_thread(request):
     page_title       = 'new_thread'
@@ -64,6 +79,9 @@ def new_thread(request):
     new_thread_title = request.POST['title']
     new_date_posted  = datetime.datetime.now()
 
+    if new_post_text.strip() == "" or new_username.strip() == "" or new_thread_title.strip() == "":
+        return HttpResponseRedirect(reverse('new_thread_error'))
+    
     # Create the thread 
     new_thread = Threads(thread_title = new_thread_title, username = new_username, date_posted = new_date_posted) 
     new_thread.save()    
@@ -83,6 +101,12 @@ def new_thread(request):
   
     return HttpResponseRedirect(reverse('index'))
 
+def new_thread_error(request):
+
+    template = loader.get_template('forum/new_thread_error.html')
+    title    = "Error creating thread"
+    context  = RequestContext(request,{"title":title})
+    return HttpResponse(template.render(context))
 
 def view_thread(request):
     query_thread_id = request.GET['thread_id']

@@ -16,5 +16,6 @@ urlpatterns = patterns('',
     url(r'^delete_thread/', views.delete_thread, name='delete_thread'),
     url(r'^new_post/',      views.new_post, name='new_post'),
     url(r'^delete_post/',   views.delete_post, name='delete_post'),
+    url(r'^new_thread_error/', views.new_thread_error, name='new_thread_error'),
     url(r'^admin/', include(admin.site.urls))
 )
