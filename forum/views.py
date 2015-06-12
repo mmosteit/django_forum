@@ -6,9 +6,6 @@ from django.core.urlresolvers import reverse
 
 
 import datetime
-import logging
-
-logger = logging.getLogger("stuff")
 
 import forum_fn
 

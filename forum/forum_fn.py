@@ -1,5 +1,4 @@
 from models import Posts
-import logging
 
 
 class post_tree():
@@ -24,7 +23,6 @@ class post_tree():
 
         #Get the content any children.
         all_children        = Posts.objects.filter(parent_id = self.post_id).order_by('date_posted')
-        logger = logging.getLogger("stuff")
       
         if all_children.count() > 0:          
             self.children = []
