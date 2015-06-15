@@ -88,7 +88,7 @@ def new_thread(request):
 
     # Create the dummy post. This post is the parent of all the top level
     # posts in this thread.  Being a dummy post, it contains no text
-    dummy_post = Posts(parent_id = 0, date_posted = new_date_posted, thread_id = new_thread.thread_id)
+    dummy_post = Posts(parent_id = 0, date_posted = new_date_posted, thread_id = new_thread.thread_id, deleted = False, username = new_username)
     dummy_post.save()
     
     # Set the new thread's first post to the dummy post
